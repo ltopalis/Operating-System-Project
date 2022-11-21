@@ -2,7 +2,7 @@
 
 declare -i num=1
 
-echo -e "Hello $USER! Your script was executed correctly!\n"
+echo -e "Hello $USER! Your script was executed succesfully!\n"
 
 echo -e "$num. Creating a file named 'testfile.c'...\n"
 touch testfile.c
