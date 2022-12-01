@@ -18,6 +18,7 @@ case $# in
 1 )
     if [ $1 == *".log" ]; then
         cat $1
+        echo ""
     else
         echo "Wrong File Argument"
 
@@ -44,9 +45,9 @@ case $# in
             fi
         elif [ $2 == "--servprot" ]; then
             if [ $3 == "IPv4" ]; then
-                echo "IPv4"
+                awk -e '$1 ~ /\./ {print $0}' $1
             elif [ $3 == "IPv6" ]; then 
-                echo "IPv6"
+                awk '$1 ~ /:/ {print $0}' $1
             else
                 echo "Wrong Network Protocol"
             fi
