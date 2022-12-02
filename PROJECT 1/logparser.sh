@@ -1,7 +1,7 @@
 #!/bin/bash
 
-function mining_usernames {
-    awk '{print $3}' access.log | sort | uniq >temp.txt
+function mining_usernames () {
+    awk '{print $3}' access.log | sort | uniq > temp.txt
 
     file="temp.txt"
 
@@ -10,6 +10,17 @@ function mining_usernames {
     done <$"temp.txt"
 
     rm temp.txt
+}
+
+function match () {
+    cat $1 | grep $2
+}
+
+function count_browsers () {
+    for browser in Mozilla Chrome Safari Edg
+    do
+        echo -e "$browser\t$(match $1 $browser | wc -l)"
+    done
 }
 
 case $# in
@@ -27,6 +38,10 @@ case $# in
     if [ $1 == *".log" ]; then
         if [ $2 == "--usrid" ]; then
             mining_usernames
+        elif [ $2 == "--browsers" ]; then
+            count_browsers $1
+        elif [ $2 == "--datum" ]; then
+            echo "Wrong Date"
         else
             echo "Wrong Option Argument"
         fi
@@ -50,6 +65,12 @@ case $# in
                 awk '$1 ~ /:/ {print $0}' $1
             else
                 echo "Wrong Network Protocol"
+            fi
+        elif [ $2 == "--datum" ]; then
+            if [[ $3 =~ ^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)$ ]]; then
+                cat $1 | grep $3
+            else
+                echo "Wrong Date"
             fi
         else
             echo "Wrong Option Argument"
