@@ -15,9 +15,6 @@ struct mesg_buffer_server_to_child
 
 typedef struct mesg_buffer_server_to_child to_child;
 
-to_child *message_to_ch;
-to_child message_from_par;
-
 void child();
 double f(double x);
 double get_wtime(void);
@@ -25,8 +22,9 @@ double get_wtime(void);
 int main(int argc, char *argv[])
 {
     int workers, tmp, i, msgid;
-    double a = 1.0, b = 4.0, tmp_start, tmp_finish, space, sum = 0;
+    double a = 1.0, b = 4.0, space, sum = 0;
     key_t key;
+    to_child *message_to_ch;
 
     do
     {
@@ -56,17 +54,14 @@ int main(int argc, char *argv[])
     }
 
     space = (b - a) / workers;
-    tmp_start = a;
     for (i = 0; i < workers; i++)
     {
         message_to_ch[i].mesg_type = 1;
-        tmp_finish = tmp_start + space;
-        message_to_ch[i].mesg_data[0] = tmp_start;
-        message_to_ch[i].mesg_data[1] = tmp_finish;
+        message_to_ch[i].mesg_data[0] = a + i * space;
+        message_to_ch[i].mesg_data[1] = a + (i + 1) * space;
         message_to_ch[i].mesg_data[2] = 0;
         if (message_to_ch[i].mesg_data[1] > b)
             message_to_ch[i].mesg_data[1] = b;
-        tmp_start = tmp_finish;
     }
 
     for (i = 0; i < workers; i++)
@@ -96,10 +91,10 @@ int main(int argc, char *argv[])
 
 void child()
 {
-    sleep(1);
     unsigned long const n = 1e9;
     key_t key;
     int msgid;
+    to_child message_from_par;
 
     key = ftok("./.tempfile", 45);
     msgid = msgget(key, 0666);
