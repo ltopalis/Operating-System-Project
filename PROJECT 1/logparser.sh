@@ -51,7 +51,13 @@ case $# in
 3 )
     if [ $1 == *".log" ]; then
         if [ $2 == "--usrid" ]; then
-            cat $1 | grep $3
+            echo | awk -v s=$3 '
+            BEGIN{ search=s }
+            {
+                if ( $3 ~ search ) {
+                    print $0;
+                }
+            }' $1
         elif [ $2 == "-method" ]; then
             if [ $3 == "POST" ] || [ $3 == "GET" ]; then
                 cat $1 | grep $3
