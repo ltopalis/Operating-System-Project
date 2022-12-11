@@ -7,15 +7,15 @@
 #include <sys/msg.h>
 #include <sys/time.h>
 
-struct mesg_buffer_server_to_child
+struct mesg_buffer
 {
     long mesg_type;
-    double mesg_data[3];
+    double mesg_data[3]; // [0] -> start, [1] -> finish, [2] -> result
 };
 
-typedef struct mesg_buffer_server_to_child to_child;
+typedef struct mesg_buffer mesg;
 
-void child();
+void child(int workers);
 double f(double x);
 double get_wtime(void);
 
@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
     int workers, tmp, i, msgid;
     double a = 1.0, b = 4.0, space, sum = 0;
     key_t key;
-    to_child *message_to_ch;
+    mesg *message_to_ch;
 
     do
     {
@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
         scanf("%d", &workers);
     } while (workers < 1);
 
-    message_to_ch = (to_child *)malloc(workers * sizeof(to_child));
+    message_to_ch = (mesg *)malloc(workers * sizeof(mesg));
     if (!message_to_ch)
     {
         fprintf(stderr, "Error Allocating memory!\n");
@@ -46,12 +46,8 @@ int main(int argc, char *argv[])
 
     double t0 = get_wtime();
     for (i = 0; i < workers; i++)
-    {
         if (fork() == 0)
-        {
-            child();
-        }
-    }
+            child(workers);
 
     space = (b - a) / workers;
     for (i = 0; i < workers; i++)
@@ -89,12 +85,12 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-void child()
+void child(int workers)
 {
-    unsigned long const n = 1e9;
+    unsigned long const n = (unsigned long)1e9 / workers;
     key_t key;
     int msgid;
-    to_child message_from_par;
+    mesg message_from_par;
 
     key = ftok("./.tempfile", 45);
     msgid = msgget(key, 0666);
