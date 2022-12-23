@@ -65,16 +65,16 @@ int main(int argc, char *argv[])
 
     for (i = 0; i < workers; i++)
     {
-        wait(&tmp);
+        waitpid(-1, NULL, 0);
         msgrcv(msgid, &message_to_ch[i], sizeof(message_to_ch[i]), 2, 0);
     }
 
-    for(i=0; i<workers; i++)
+    for (i = 0; i < workers; i++)
         sum += message_to_ch[i].mesg_data[2];
-    
+
     double t1 = get_wtime();
 
-    printf("Time=%lf, Result=%lf\n", t1-t0, sum);
+    printf("Time=%lf, Result=%lf\n", t1 - t0, sum);
 
     free(message_to_ch);
 
@@ -100,9 +100,7 @@ void child(int workers)
     message_from_par.mesg_data[2] = 0;
 
     for (unsigned long i = 0; i < n; i++)
-    {
-        message_from_par.mesg_data[2] += f(message_from_par.mesg_data[0] + (i + 0.5) * dx);
-    }
+        message_from_par.mesg_data[2] += f(message_from_par.mesg_data[0] + i * dx);
     message_from_par.mesg_data[2] *= dx;
 
     message_from_par.mesg_type = 2;
@@ -118,10 +116,11 @@ double f(double x)
     return log(x) * sqrt(x);
 }
 
-double get_wtime(void){
+double get_wtime(void)
+{
     struct timeval t;
 
     gettimeofday(&t, NULL);
 
-    return (double)t.tv_sec + (double)t.tv_usec*1.0e-6;
+    return (double)t.tv_sec + (double)t.tv_usec * 1.0e-6;
 }
