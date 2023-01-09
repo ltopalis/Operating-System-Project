@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 
 #include "structures.h"
 #include "FCFS.h"
@@ -23,10 +22,4 @@ void FCFSadd(process_info data, process_list *root){
     node->next = NULL;
 
     //printf("%p %p %p\n", root, root->next, root->next->next);
-}
-
-bool is_first(process_list node){
-    if(node.prev->prev == NULL)
-        return TRUE;
-    return FALSE;
 }
