@@ -9,22 +9,20 @@
 /*
  * Η νέα διεργασία προστίθεται πάντα στο τέλος της λίστας.
 */
-void add(process_list *data, process_list root){
-    process_list *node = &root;
+void FCFSadd(process_info data, process_list *root){
+    process_list *node = root;
+
     while(node->next != NULL){
         node = node->next;
     }
 
     node->next = (process_list *)malloc(sizeof(process_list));
-    node->next = data;
-    data->prev = node;
-    data->next = NULL;
-    printf("In add %p %p %p\n", node, node->next, node->next->next);
-    node = &root;
-    while(node->next != NULL){
-        printf("%s\n", node->info.name);
-        node = node->next;
-    }
+    node->next->prev = node;
+    node = node->next;
+    copyInfoStructure(&(node->info), data);
+    node->next = NULL;
+
+    //printf("%p %p %p\n", root, root->next, root->next->next);
 }
 
 bool is_first(process_list node){
