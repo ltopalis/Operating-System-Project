@@ -26,4 +26,7 @@ typedef struct history_data history_data;
 typedef struct process_info process_info;
 typedef struct process_list process_list;
 
+void copyInfoStructure(process_info *dest, process_info src);
+void toString(process_info node);
+
 #endif
