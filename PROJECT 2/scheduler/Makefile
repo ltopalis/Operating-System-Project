@@ -7,7 +7,7 @@ all: scheduler
 objectFiles:
 	@$(CC) -c *.c
 
-scheduler: FCFS.o structures.o scheduler.o
+scheduler: FCFS.o structures.o SJF.o RR.o PRIO.o scheduler.o
 	@$(CC) -o scheduler *.o
 	@rm -f *.o
 
