@@ -7,11 +7,13 @@
 
 /*
  * Η νέα διεργασία προστίθεται πάντα στο τέλος της λίστας.
-*/
-void FCFSadd(process_info data, process_list *root){
+ */
+void FCFSadd(process_info data, process_list *root)
+{
     process_list *node = root;
 
-    while(node->next != NULL){
+    while (node->next != NULL)
+    {
         node = node->next;
     }
 
@@ -20,6 +22,4 @@ void FCFSadd(process_info data, process_list *root){
     node = node->next;
     copyInfoStructure(&(node->info), data);
     node->next = NULL;
-
-    //printf("%p %p %p\n", root, root->next, root->next->next);
 }

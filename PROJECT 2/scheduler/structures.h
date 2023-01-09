@@ -6,13 +6,15 @@
 
 #include <stdbool.h>
 
-struct history_data{
+struct history_data
+{
     float time;
     char status[20];
     struct history_data *next;
 };
 
-struct process_info{
+struct process_info
+{
     int PID;
     char name[20];
     float elapsed_time;
@@ -21,7 +23,8 @@ struct process_info{
     struct history_data *history;
 };
 
-struct process_list{
+struct process_list
+{
     struct process_list *prev;
     struct process_info info;
     struct process_list *next;
