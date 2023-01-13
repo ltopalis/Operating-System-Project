@@ -5,10 +5,11 @@
 #define FALSE 0
 
 #include <stdbool.h>
+#include <time.h>
 
 struct history_data
 {
-    float time;
+    time_t time;
     char status[20];
     struct history_data *next;
 };

@@ -4,5 +4,6 @@
 #include "structures.h"
 
 void FCFSadd(process_info data, process_list *root);
+void FCFS(process_list *root);
 
 #endif

@@ -1,14 +1,14 @@
 CC = gcc
-CFLAGS = -Wall
 LDFLAGS = -lm
+CFLAGS=-Wall -O3 -pthread
 
 all: scheduler
 
 objectFiles:
-	@$(CC) -c *.c
+	@$(CC) $(CFLAGS) -c *.c
 
 scheduler: FCFS.o structures.o SJF.o RR.o PRIO.o scheduler.o
-	@$(CC) -o scheduler *.o
+	@$(CC) $(CFLAGS) -o scheduler *.o
 	@rm -f *.o
 
 clean:

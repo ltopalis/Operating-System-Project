@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include "structures.h"
 #include "FCFS.h"
 #include "SJF.h"
@@ -21,81 +22,114 @@
 int main(int argc, char **argv)
 {
 	/* local variables */
+	void (*algorithm)(process_info, process_list *);
+	char *line = NULL;
+	size_t len = 0;
+	FILE *fp;
+	process_info data;
 	process_list *root = (process_list *)malloc(sizeof(process_list));
 	process_list *node = (process_list *)malloc(sizeof(process_list));
-
 	root->next = NULL;
 	root->prev = NULL;
-	process_info data;
 
-	data.elapsed_time = 1.01;
-	strcpy(data.name, "work1");
-	data.PID = 3627;
-	data.priority = 6;
-	data.workload_time = 1.01;
-	RRadd(data, root);
+	/* choosing algorithm */
 
-	data.elapsed_time = 2.010;
-	strcpy(data.name, "work2");
-	data.PID = 3628;
-	data.priority = 4;
-	data.workload_time = 3.02;
-	RRadd(data, root);
-
-	data.elapsed_time = 3.010;
-	strcpy(data.name, "work3");
-	data.PID = 3639;
-	data.workload_time = 6.03;
-	data.priority = 1;
-	RRadd(data, root);
-
-	data.elapsed_time = 4.010;
-	strcpy(data.name, "work4");
-	data.PID = 3630;
-	data.workload_time = 10.04;
-	data.priority = 7;
-	RRadd(data, root);
-
-	data.elapsed_time = 5.010;
-	strcpy(data.name, "work5");
-	data.PID = 3631;
-	data.workload_time = 15.05;
-	data.priority = 3;
-	RRadd(data, root);
-
-	data.elapsed_time = 6.01;
-	strcpy(data.name, "work6");
-	data.PID = 3632;
-	data.workload_time = 21.06;
-	data.priority = 2;
-	RRadd(data, root);
-
-	data.elapsed_time = 7.01;
-	strcpy(data.name, "work7");
-	data.PID = 3633;
-	data.workload_time = 28.07;
-	data.priority = 5;
-	RRadd(data, root);
-
-	node = root->next;
-	while (node->next != NULL)
+	if (!strcmp(argv[1], "FCFS"))
 	{
-		node = node->next;
+		algorithm = &FCFSadd;
 	}
+	else if (!strcmp(argv[1], "SJF"))
+	{
+		algorithm = &SJFadd;
+	}
+	else if (!strcmp(argv[1], "RR"))
+	{
+		algorithm = &RRadd;
+	}
+	else if (!strcmp(argv[1], "PRIO"))
+	{
+		algorithm = &PRIOadd;
+	}
+	else
+	{
+		fprintf(stderr, "Wrong Argument\n");
+		exit(0);
+	}
+
+	/* read the file and initialize the list */
+	if (!(fp = fopen(argv[argc - 1], "r")))
+	{
+		fprintf(stderr, "File can't be open!\n");
+		exit(0);
+	}
+
+	while (getline(&line, &len, fp) != -1)
+	{
+		strcpy(data.name, strtok(line, "\t"));
+		data.priority = atoi(strtok(NULL, "\t"));
+		data.workload_time = clock();
+		data.elapsed_time = 0;
+		data.PID = 0;
+		data.history = (history_data *)malloc(sizeof(history_data));
+		strcpy(data.history->status, "Initialize");
+		data.history->time = time(NULL);
+		data.history->next = NULL;
+		(*algorithm)(data, root);
+	}
+
+	if (!strcmp(argv[1], "FCFS"))
+	{
+		FCFS(root);
+	}
+	else if (!strcmp(argv[1], "SJF"))
+	{
+		FCFS(root);
+	}
+	else if (!strcmp(argv[1], "RR"))
+	{
+		algorithm = &RRadd;
+	}
+	else if (!strcmp(argv[1], "PRIO"))
+	{
+		algorithm = &PRIOadd;
+	}
+	else
+	{
+		fprintf(stderr, "Wrong Argument\n");
+		exit(0);
+	}
+
+
+
+
+
+
+
+
+
+
+	fclose(fp);
+	if (line)
+	{
+		free(line);
+	}
+
+	/* print the list */
+	node = root->next;
 	while (node != NULL)
 	{
 		toString(node->info);
-		node = node->prev;
+		history_data *hid = (history_data *)malloc(sizeof(history_data));
+		hid = node->info.history;
+		while (hid != NULL)
+		{
+			printf("%s: %s\n", hid->status, ctime(&hid->time));
+			hid = hid->next;
+		}
+
+		node = node->next;
 	}
 
-	/* parse input arguments (policy, quantum (if required), input filename */
-
-	/* read input file - populate queue */
-
-	/* call selected scheduling policy */
-
-	/* print information and statistics */
-
 	printf("Scheduler exits\n");
-	return 0;
+	exit(0);
 }
