@@ -28,8 +28,11 @@ int main(int argc, char **argv)
 	FILE *fp;
 	process_info data;
 	process_list *root = (process_list *)malloc(sizeof(process_list));
+	process_list *finished = (process_list *)malloc(sizeof(process_list));
 	root->next = NULL;
 	root->prev = NULL;
+	finished->next = NULL;
+	finished->prev = NULL;
 
 	/* choosing algorithm */
 
@@ -66,7 +69,7 @@ int main(int argc, char **argv)
 	{
 		strcpy(data.name, strtok(line, "\t"));
 		data.priority = atoi(strtok(NULL, "\t"));
-		data.workload_time = clock();
+		data.workload_time = get_wtime();
 		data.elapsed_time = 0;
 		data.PID = 0;
 		data.history = (history_data *)malloc(sizeof(history_data));
@@ -78,11 +81,11 @@ int main(int argc, char **argv)
 
 	if (!strcmp(argv[1], "FCFS"))
 	{
-		FCFS(root);
+		FCFS(root, finished);
 	}
 	else if (!strcmp(argv[1], "SJF"))
 	{
-		FCFS(root);
+		FCFS(root, finished);
 	}
 	else if (!strcmp(argv[1], "RR"))
 	{
@@ -105,7 +108,7 @@ int main(int argc, char **argv)
 	}
 
 	/* print the list */
-	print_to_file(root, argc, argv);
+	print_to_file(finished, argc, argv);
 
 	printf("Scheduler exits\n");
 	exit(0);

@@ -6,6 +6,7 @@
 
 #include <stdbool.h>
 #include <time.h>
+#include <sys/time.h>
 
 struct history_data
 {
@@ -18,8 +19,8 @@ struct process_info
 {
     int PID;
     char name[20];
-    float elapsed_time;
-    float workload_time;
+    double elapsed_time;
+    double workload_time;
     int priority;
     struct history_data *history;
 };
@@ -39,5 +40,6 @@ void copyInfoStructure(process_info *dest, process_info src);
 void toString(process_info node, FILE *file);
 bool is_first(process_list node);
 void print_to_file(process_list *root, int argc, char **argv);
+double get_wtime(void);
 
 #endif
