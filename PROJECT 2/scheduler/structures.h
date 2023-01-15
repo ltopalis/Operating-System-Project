@@ -36,7 +36,8 @@ typedef struct process_info process_info;
 typedef struct process_list process_list;
 
 void copyInfoStructure(process_info *dest, process_info src);
-void toString(process_info node);
+void toString(process_info node, FILE *file);
 bool is_first(process_list node);
+void print_to_file(process_list *root, int argc, char **argv);
 
 #endif

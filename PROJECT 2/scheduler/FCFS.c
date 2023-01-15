@@ -30,6 +30,8 @@ void FCFSadd(process_info data, process_list *root)
 void FCFS(process_list *root)
 {
     process_list *node = root->next;
+    history_data *history_node;
+    
     while (node != NULL)
     {
         node->info.elapsed_time = clock();
@@ -40,11 +42,30 @@ void FCFS(process_list *root)
         }
         else
         {
+            history_node = node->info.history;
+            while(history_node->next != NULL){
+                history_node = history_node->next;
+            }
+            history_node->next = (history_data *)malloc(sizeof(history_data));
+            strcpy(history_node->next->status, "RUNNING");
+            history_node->next->time = time(NULL);
+            history_node->next->next = NULL;
+            
             waitpid(node->info.PID, NULL, 0);
             node->info.workload_time = clock() - node->info.workload_time;
             node->info.elapsed_time = clock() - node->info.elapsed_time;
             node->info.elapsed_time /= CLOCKS_PER_SEC;
             node->info.workload_time /= CLOCKS_PER_SEC;
+            
+            history_node = node->info.history;
+            while(history_node->next != NULL){
+                history_node = history_node->next;
+            }
+            history_node->next = (history_data *)malloc(sizeof(history_data));
+            strcpy(history_node->next->status, "EXITED");
+            history_node->next->time = time(NULL);
+            history_node->next->next = NULL;
+            
             node = node->next;
         }
     }

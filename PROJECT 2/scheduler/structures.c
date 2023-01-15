@@ -1,6 +1,9 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include "structures.h"
 
 void copyInfoStructure(process_info *dest, process_info src)
@@ -13,11 +16,18 @@ void copyInfoStructure(process_info *dest, process_info src)
     dest->workload_time = src.workload_time;
 }
 
-void toString(process_info node)
+void toString(process_info node, FILE *file)
 {
-    fprintf(stdout,
-            "PID %d - CMD: %s\n                        Elapsed time = %.3f secs\n                        Workload time = %.3f secs\n",
-            node.PID, node.name, node.elapsed_time, node.workload_time);
+    char *name, *token;
+    token = strtok(node.name, "/");
+    while (token != NULL)
+    {
+        name = token;
+        token = strtok(NULL, "/");
+    }
+    fprintf(file,
+            "PID %d - CMD: %s\n\t\t\t\t\t\t%-13s = %f secs\n\t\t\t\t\t\t%-13s = %f secs\n",
+            node.PID, name, "Elapsed time", node.elapsed_time, "Workload time", node.workload_time);
 }
 
 bool is_first(process_list node)
@@ -25,4 +35,62 @@ bool is_first(process_list node)
     if (node.prev->prev == NULL)
         return TRUE;
     return FALSE;
+}
+
+void print_to_file(process_list *root, int argc, char **argv)
+{
+    FILE *output, *history_output;
+    struct stat st;
+    char *name, *token;
+    float workload = 0;
+    process_list *node = (process_list *)malloc(sizeof(process_list));
+
+    if (stat("output", &st))
+        if (mkdir("output", 0777))
+        {
+            perror("mkdir failed");
+            exit(0);
+        }
+    if (!(output = fopen("output/output.txt", "w")))
+    {
+        fprintf(stderr, "File can't be open!\n");
+        exit(0);
+    }
+    if(!(history_output = fopen("output/history.txt", "w")))
+    {
+        fprintf(stderr, "File can't be open!\n");
+        exit(0);
+    }
+    
+    fprintf(output, "# ");
+    for(int i = 0; i<argc; i++){
+        fprintf(output, "%s ", argv[i]);
+    }
+    fprintf(output, "\n\n");
+    
+    node = root->next;
+    while (node != NULL)
+    {
+        toString(node->info, output);
+        workload += node->info.workload_time;
+        history_data *hid = (history_data *)malloc(sizeof(history_data));
+        token = strtok(node->info.name, "/");
+        while (token != NULL)
+        {
+            name = token;
+            token = strtok(NULL, "/");
+        }
+        fprintf(history_output, "%s (%d)\n", name, node->info.PID);
+        hid = node->info.history;
+        while (hid != NULL)
+        {
+            fprintf(history_output, "\t\t%-7s: %s", hid->status, ctime(&hid->time));
+            hid = hid->next;
+        }
+
+        node = node->next;
+    }
+    fprintf(output, "WORKLOAD TIME: %f seconds", workload);
+    fclose(output);
+    fclose(history_output);
 }

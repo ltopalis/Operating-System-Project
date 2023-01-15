@@ -28,7 +28,6 @@ int main(int argc, char **argv)
 	FILE *fp;
 	process_info data;
 	process_list *root = (process_list *)malloc(sizeof(process_list));
-	process_list *node = (process_list *)malloc(sizeof(process_list));
 	root->next = NULL;
 	root->prev = NULL;
 
@@ -71,7 +70,7 @@ int main(int argc, char **argv)
 		data.elapsed_time = 0;
 		data.PID = 0;
 		data.history = (history_data *)malloc(sizeof(history_data));
-		strcpy(data.history->status, "Initialize");
+		strcpy(data.history->status, "READY");
 		data.history->time = time(NULL);
 		data.history->next = NULL;
 		(*algorithm)(data, root);
@@ -99,15 +98,6 @@ int main(int argc, char **argv)
 		exit(0);
 	}
 
-
-
-
-
-
-
-
-
-
 	fclose(fp);
 	if (line)
 	{
@@ -115,20 +105,7 @@ int main(int argc, char **argv)
 	}
 
 	/* print the list */
-	node = root->next;
-	while (node != NULL)
-	{
-		toString(node->info);
-		history_data *hid = (history_data *)malloc(sizeof(history_data));
-		hid = node->info.history;
-		while (hid != NULL)
-		{
-			printf("%s: %s\n", hid->status, ctime(&hid->time));
-			hid = hid->next;
-		}
-
-		node = node->next;
-	}
+	print_to_file(root, argc, argv);
 
 	printf("Scheduler exits\n");
 	exit(0);
