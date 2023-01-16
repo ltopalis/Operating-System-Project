@@ -39,6 +39,8 @@ void FCFS(process_list *root, process_list *finished)
         {
             char *arg[] = {node->info.name, NULL};
             execvp(arg[0], arg);
+            perror("file not found");
+            exit(1);
         }
         else
         {
@@ -48,7 +50,7 @@ void FCFS(process_list *root, process_list *finished)
             }
             history_node->next = (history_data *)malloc(sizeof(history_data));
             strcpy(history_node->next->status, "RUNNING");
-            history_node->next->time = time(NULL);
+            //history_node->next->time = time(NULL);
             history_node->next->next = NULL;
             
             waitpid(node->info.PID, NULL, WUNTRACED);            
@@ -58,7 +60,7 @@ void FCFS(process_list *root, process_list *finished)
             }
             history_node->next = (history_data *)malloc(sizeof(history_data));
             strcpy(history_node->next->status, "EXITED");
-            history_node->next->time = time(NULL);
+            //history_node->next->time = time(NULL);
             history_node->next->next = NULL;
 
             node->info.workload_time = get_wtime() - node->info.workload_time;

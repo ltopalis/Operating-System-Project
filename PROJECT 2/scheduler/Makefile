@@ -12,4 +12,4 @@ scheduler: FCFS.o structures.o SJF.o RR.o PRIO.o scheduler.o
 	@rm -f *.o
 
 clean:
-	rm -f scheduler
+	rm -f scheduler -rf output

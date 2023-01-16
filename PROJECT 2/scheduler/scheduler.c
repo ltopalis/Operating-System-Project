@@ -26,6 +26,7 @@ int main(int argc, char **argv)
 	char *line = NULL;
 	size_t len = 0;
 	FILE *fp;
+	struct timespec quantum;
 	process_info data;
 	process_list *root = (process_list *)malloc(sizeof(process_list));
 	process_list *finished = (process_list *)malloc(sizeof(process_list));
@@ -36,7 +37,7 @@ int main(int argc, char **argv)
 
 	/* choosing algorithm */
 
-	if (!strcmp(argv[1], "FCFS"))
+	if (!strcmp(argv[1], "FCFS") || !strcmp(argv[1], "BATCH"))
 	{
 		algorithm = &FCFSadd;
 	}
@@ -70,16 +71,16 @@ int main(int argc, char **argv)
 		strcpy(data.name, strtok(line, "\t"));
 		data.priority = atoi(strtok(NULL, "\t"));
 		data.workload_time = get_wtime();
-		data.elapsed_time = 0;
+		data.elapsed_time = 0.0;
 		data.PID = 0;
 		data.history = (history_data *)malloc(sizeof(history_data));
 		strcpy(data.history->status, "READY");
-		data.history->time = time(NULL);
+		//data.history->time = time(NULL);
 		data.history->next = NULL;
 		(*algorithm)(data, root);
 	}
 
-	if (!strcmp(argv[1], "FCFS"))
+	if (!strcmp(argv[1], "FCFS") || !strcmp(argv[1], "BATCH"))
 	{
 		FCFS(root, finished);
 	}
@@ -89,7 +90,10 @@ int main(int argc, char **argv)
 	}
 	else if (!strcmp(argv[1], "RR"))
 	{
-		algorithm = &RRadd;
+		long temp = strtol(argv[2], NULL, 10);
+		quantum.tv_sec = temp / 1000000000;
+		quantum.tv_nsec = temp % 1000000000;
+		RR(root, quantum, finished);
 	}
 	else if (!strcmp(argv[1], "PRIO"))
 	{

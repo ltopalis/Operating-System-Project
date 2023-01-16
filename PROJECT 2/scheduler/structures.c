@@ -52,12 +52,12 @@ void print_to_file(process_list *root, int argc, char **argv)
             perror("mkdir failed");
             exit(0);
         }
-    if (!(output = fopen("output/output.txt", "w")))
+    if (!(output = fopen("output/output.txt", "a")))
     {
         fprintf(stderr, "File can't be open!\n");
         exit(0);
     }
-    if (!(history_output = fopen("output/history.txt", "w")))
+    if (!(history_output = fopen("output/history.txt", "a")))
     {
         fprintf(stderr, "File can't be open!\n");
         exit(0);
@@ -67,6 +67,7 @@ void print_to_file(process_list *root, int argc, char **argv)
     for (int i = 0; i < argc; i++)
     {
         fprintf(output, "%s ", argv[i]);
+        fprintf(history_output, "%s \n", argv[i]);
     }
     fprintf(output, "\n\n");
 
@@ -86,13 +87,14 @@ void print_to_file(process_list *root, int argc, char **argv)
         hid = node->info.history;
         while (hid != NULL)
         {
-            fprintf(history_output, "\t\t%-7s: %s", hid->status, ctime(&hid->time));
+            fprintf(history_output, "\t\t%-7s\n", hid->status/*, ctime(&hid->time)*/);
             hid = hid->next;
         }
 
         node = node->next;
     }
-    fprintf(output, "WORKLOAD TIME: %.3lf seconds", workload);
+    fprintf(output, "WORKLOAD TIME: %.3lf seconds\n\n", workload);
+    fprintf(history_output, "\n\n");
     fclose(output);
     fclose(history_output);
 }
