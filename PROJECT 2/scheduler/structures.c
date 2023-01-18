@@ -64,12 +64,14 @@ void print_to_file(process_list *root, int argc, char **argv)
     }
 
     fprintf(output, "# ");
+    fprintf(history_output, "# ");
     for (int i = 0; i < argc; i++)
     {
         fprintf(output, "%s ", argv[i]);
-        fprintf(history_output, "%s \n", argv[i]);
+        fprintf(history_output, "%s ", argv[i]);
     }
     fprintf(output, "\n\n");
+    fprintf(history_output, "\n\n");
 
     node = root->next;
     while (node != NULL)
@@ -87,7 +89,7 @@ void print_to_file(process_list *root, int argc, char **argv)
         hid = node->info.history;
         while (hid != NULL)
         {
-            fprintf(history_output, "\t\t%-7s\n", hid->status/*, ctime(&hid->time)*/);
+            fprintf(history_output, "\t\t%-7s %s", hid->status, ctime(&hid->time));
             hid = hid->next;
         }
 

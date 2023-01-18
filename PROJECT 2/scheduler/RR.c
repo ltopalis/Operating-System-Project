@@ -59,7 +59,7 @@ void RR(process_list *root, struct timespec quantum, process_list *finished)
             }
             history_node->next = (history_data *)malloc(sizeof(history_data));
             strcpy(history_node->next->status, "RUNNING");
-            //history_node->next->time = time(NULL);
+            history_node->next->time = time(NULL);
             history_node->next->next = NULL;
 
             while (root->next)
@@ -79,9 +79,10 @@ void RR(process_list *root, struct timespec quantum, process_list *finished)
                     {
                         history_node = history_node->next;
                     }
+                    
                     history_node->next = (history_data *)malloc(sizeof(history_data));
                     strcpy(history_node->next->status, "EXITED");
-                    //history_node->next->time = time(NULL);
+                    history_node->next->time = time(NULL);
                     history_node->next->next = NULL;
                     node->info.workload_time = get_wtime() - node->info.workload_time;
                     finish = get_wtime();
@@ -134,22 +135,26 @@ void RR(process_list *root, struct timespec quantum, process_list *finished)
                     }
                     history_node->next = (history_data *)malloc(sizeof(history_data));
                     strcpy(history_node->next->status, "STOPPED");
-                    //history_node->next->time = time(NULL);
+                    history_node->next->time = time(NULL);
                     history_node->next->next = NULL;
                     finish = get_wtime();
                     node->info.elapsed_time += (finish - start);
 
                     // put the process at the end of the list
-                    node->next->prev = node->prev;
-                    node->prev->next = node->next;
-                    findingTheLastNode = root->next;
-                    while (findingTheLastNode->next != NULL)
+                    if (node->next != NULL)
                     {
-                        findingTheLastNode = findingTheLastNode->next;
+                        // There are more than one waiting processes
+                        node->next->prev = node->prev;
+                        node->prev->next = node->next;
+                        findingTheLastNode = root->next;
+                        while (findingTheLastNode->next != NULL)
+                        {
+                            findingTheLastNode = findingTheLastNode->next;
+                        }
+                        findingTheLastNode->next = node;
+                        node->next = NULL;
+                        node->prev = findingTheLastNode;
                     }
-                    findingTheLastNode->next = node;
-                    node->next = NULL;
-                    node->prev = findingTheLastNode;
 
                     node = root->next;
 
@@ -181,7 +186,7 @@ void RR(process_list *root, struct timespec quantum, process_list *finished)
                     }
                     history_node->next = (history_data *)malloc(sizeof(history_data));
                     strcpy(history_node->next->status, "RUNNING");
-                    //history_node->next->time = time(NULL);
+                    history_node->next->time = time(NULL);
                     history_node->next->next = NULL;
                 }
             }

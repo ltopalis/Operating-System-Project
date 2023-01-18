@@ -11,6 +11,7 @@
 struct history_data
 {
     char status[20];
+    time_t time;
     struct history_data *next;
 };
 
