@@ -75,7 +75,7 @@ int main(int argc, char **argv)
 		data.PID = 0;
 		data.history = (history_data *)malloc(sizeof(history_data));
 		strcpy(data.history->status, "READY");
-		//data.history->time = time(NULL);
+		data.history->time = time(NULL);
 		data.history->next = NULL;
 		(*algorithm)(data, root);
 	}
@@ -97,7 +97,10 @@ int main(int argc, char **argv)
 	}
 	else if (!strcmp(argv[1], "PRIO"))
 	{
-		algorithm = &PRIOadd;
+		long temp = strtol(argv[2], NULL, 10);
+		quantum.tv_sec = temp / 1000000000;
+		quantum.tv_nsec = temp % 1000000000;
+		PRIO(root, quantum, finished);
 	}
 	else
 	{
