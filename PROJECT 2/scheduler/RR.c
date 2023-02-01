@@ -127,6 +127,8 @@ void RR(process_list *root, struct timespec quantum, process_list *finished)
                 }
                 else if (WIFSTOPPED(status))
                 {
+                    // the process stopped by a signal
+                    
                     // update history
                     history_node = node->info.history;
                     while (history_node->next != NULL)
@@ -178,7 +180,6 @@ void RR(process_list *root, struct timespec quantum, process_list *finished)
                         }
                     }
 
-                    // the process stopped by a signal
                     history_node = node->info.history;
                     while (history_node->next != NULL)
                     {
