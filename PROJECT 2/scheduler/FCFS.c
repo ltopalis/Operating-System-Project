@@ -31,7 +31,7 @@ void FCFS(process_list *root, process_list *finished)
     process_list *node = root->next;
     process_list *finished_node = finished;
     history_data *history_node;
-    
+
     while (node != NULL)
     {
         node->info.elapsed_time = get_wtime();
@@ -45,36 +45,38 @@ void FCFS(process_list *root, process_list *finished)
         else
         {
             history_node = node->info.history;
-            while(history_node->next != NULL){
+            while (history_node->next != NULL)
+            {
                 history_node = history_node->next;
             }
             history_node->next = (history_data *)malloc(sizeof(history_data));
             strcpy(history_node->next->status, "RUNNING");
-            //history_node->next->time = time(NULL);
+            history_node->next->time = time(NULL);
             history_node->next->next = NULL;
-            
-            waitpid(node->info.PID, NULL, WUNTRACED);            
+
+            waitpid(node->info.PID, NULL, WUNTRACED);
             history_node = node->info.history;
-            while(history_node->next != NULL){
+            while (history_node->next != NULL)
+            {
                 history_node = history_node->next;
             }
             history_node->next = (history_data *)malloc(sizeof(history_data));
             strcpy(history_node->next->status, "EXITED");
-            //history_node->next->time = time(NULL);
+            history_node->next->time = time(NULL);
             history_node->next->next = NULL;
 
             node->info.workload_time = get_wtime() - node->info.workload_time;
             node->info.elapsed_time = get_wtime() - node->info.elapsed_time;
 
-            
-
-            while(finished_node->next != NULL){
+            while (finished_node->next != NULL)
+            {
                 finished_node = finished_node->next;
             }
-            
+
             finished_node->next = node;
             node->prev->next = node->next;
-            if(node->next != NULL) node->next->prev = node->prev;
+            if (node->next != NULL)
+                node->next->prev = node->prev;
             node->next = NULL;
             node->prev = finished_node;
 
