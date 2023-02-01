@@ -1,3 +1,8 @@
+/*
+ * ΣΑΜΑΡΑ ΧΡΙΣΤΙΝΑ-ΕΛΕΑΝΝΑ 1084622
+ * ΤΟΠΑΛΗΣ ΛΑΖΑΡΟΣ         1088101
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -79,7 +84,7 @@ void RR(process_list *root, struct timespec quantum, process_list *finished)
                     {
                         history_node = history_node->next;
                     }
-                    
+
                     history_node->next = (history_data *)malloc(sizeof(history_data));
                     strcpy(history_node->next->status, "EXITED");
                     history_node->next->time = time(NULL);
@@ -128,7 +133,7 @@ void RR(process_list *root, struct timespec quantum, process_list *finished)
                 else if (WIFSTOPPED(status))
                 {
                     // the process stopped by a signal
-                    
+
                     // update history
                     history_node = node->info.history;
                     while (history_node->next != NULL)

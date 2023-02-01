@@ -1,3 +1,8 @@
+/*
+ * ΣΑΜΑΡΑ ΧΡΙΣΤΙΝΑ-ΕΛΕΑΝΝΑ 1084622
+ * ΤΟΠΑΛΗΣ ΛΑΖΑΡΟΣ         1088101
+ */
+
 #ifndef STRUCTURES_H
 #define STRUCTURES_H
 

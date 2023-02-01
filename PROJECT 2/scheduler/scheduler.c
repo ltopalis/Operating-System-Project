@@ -1,3 +1,8 @@
+/*
+ * ΣΑΜΑΡΑ ΧΡΙΣΤΙΝΑ-ΕΛΕΑΝΝΑ 1084622
+ * ΤΟΠΑΛΗΣ ΛΑΖΑΡΟΣ         1088101
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,17 +12,6 @@
 #include "SJF.h"
 #include "RR.h"
 #include "PRIO.h"
-/* header files */
-
-/* global definitions */
-
-/* definition and implementation of process descriptor and queue(s) */
-
-/* global variables and data structures */
-
-/* signal handler(s) */
-
-/* implementation of the scheduling policies, etc. batch(), rr() etc. */
 
 int main(int argc, char **argv)
 {

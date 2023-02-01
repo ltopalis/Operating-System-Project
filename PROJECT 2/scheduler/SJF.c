@@ -1,3 +1,8 @@
+/*
+ * ΣΑΜΑΡΑ ΧΡΙΣΤΙΝΑ-ΕΛΕΑΝΝΑ 1084622
+ * ΤΟΠΑΛΗΣ ΛΑΖΑΡΟΣ         1088101
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "structures.h"

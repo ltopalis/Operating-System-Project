@@ -1,3 +1,8 @@
+/*
+ * ΣΑΜΑΡΑ ΧΡΙΣΤΙΝΑ-ΕΛΕΑΝΝΑ 1084622
+ * ΤΟΠΑΛΗΣ ΛΑΖΑΡΟΣ         1088101
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "structures.h"
@@ -69,18 +74,6 @@ void PRIO(process_list *root, struct timespec quantum, process_list *finished)
         current_node->prev = temp_node;
     }
 
-    /*for (int i = 1; i < array_size; i++)
-    {
-        printf("%d\n", i);
-
-        process_list *current_node = array_list[i]->next;
-        while (current_node != NULL)
-        {
-            printf("\t%d\n", current_node->info.priority);
-            current_node = current_node->next;
-        }
-    }*/
-
     for (int i = 1; i < array_size; i++)
     {
         if (array_list[i]->next != NULL)
@@ -96,6 +89,6 @@ void PRIO(process_list *root, struct timespec quantum, process_list *finished)
         }
     }
 
-    for(int i = 0; i < array_size; i++)
+    for (int i = 0; i < array_size; i++)
         free(array_list[i]);
 }
